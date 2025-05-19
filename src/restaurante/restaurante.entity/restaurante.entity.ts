@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { PlatoEntity } from '../../plato/plato.entity/plato.entity';
 
 @Entity()
 export class RestauranteEntity {
@@ -16,4 +23,10 @@ export class RestauranteEntity {
 
   @Column()
   paginaWeb: string;
+
+  @ManyToMany(() => PlatoEntity, (plato) => plato.restaurantes, {
+    cascade: true,
+  })
+  @JoinTable()
+  platos: PlatoEntity[];
 }
