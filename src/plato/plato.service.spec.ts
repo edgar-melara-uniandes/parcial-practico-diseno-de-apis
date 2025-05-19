@@ -3,7 +3,7 @@ import { PlatoService } from './plato.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { PlatoEntity } from './plato.entity/plato.entity';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 const platoArray = [
   {
@@ -95,6 +95,48 @@ describe('PlatoService', () => {
     expect(repo.save).toHaveBeenCalled();
   });
 
+  it('create should throw BadRequestException if categoria is invalid', async () => {
+    const dto = {
+      nombre: 'Nuevo',
+      descripcion: 'Desc',
+      precio: 15,
+      categoria: 'invalid',
+    };
+    await expect(service.create(dto)).rejects.toThrow(BadRequestException);
+  });
+
+  it('create should throw BadRequestException if precio is not positive', async () => {
+    const dto = {
+      nombre: 'Nuevo',
+      descripcion: 'Desc',
+      precio: -5,
+      categoria: 'entrada',
+    };
+    await expect(service.create(dto)).rejects.toThrow(BadRequestException);
+  });
+
+  it('create should throw BadRequestException if precio is missing', async () => {
+    const dto = {
+      nombre: 'Nuevo',
+      descripcion: 'Desc',
+      categoria: 'entrada',
+    };
+    await expect(service.create(dto as any)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('create should throw BadRequestException if categoria is missing', async () => {
+    const dto = {
+      nombre: 'Nuevo',
+      descripcion: 'Desc',
+      precio: 10,
+    };
+    await expect(service.create(dto as any)).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
   it('update should update and return the plato', async () => {
     jest.spyOn(repo, 'findOne').mockResolvedValueOnce(platoArray[0]);
     jest.spyOn(service, 'findOne').mockResolvedValueOnce(platoArray[0]);
@@ -108,6 +150,20 @@ describe('PlatoService', () => {
     jest.spyOn(repo, 'findOne').mockResolvedValueOnce(null);
     await expect(service.update(999, { nombre: 'X' })).rejects.toThrow(
       NotFoundException,
+    );
+  });
+
+  it('update should throw BadRequestException if categoria is invalid', async () => {
+    jest.spyOn(repo, 'findOne').mockResolvedValueOnce(platoArray[0]);
+    await expect(service.update(1, { categoria: 'invalid' })).rejects.toThrow(
+      BadRequestException,
+    );
+  });
+
+  it('update should throw BadRequestException if precio is not positive', async () => {
+    jest.spyOn(repo, 'findOne').mockResolvedValueOnce(platoArray[0]);
+    await expect(service.update(1, { precio: 0 })).rejects.toThrow(
+      BadRequestException,
     );
   });
 
