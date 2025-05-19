@@ -31,6 +31,17 @@
 $ npm install
 ```
 
+## Database setup with Docker
+
+You can start a PostgreSQL database using Docker:
+
+```bash
+docker run --name postgres-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=restaurantes -p 5432:5432 -d postgres:15
+```
+
+- The app expects the database to be available at `localhost:5432` with user `postgres`, password `postgres`, and database `restaurantes`.
+- Adjust your `ormconfig` or environment variables if needed.
+
 ## Compile and run the project
 
 ```bash
@@ -56,6 +67,22 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Postman Collection
+
+Para probar la API con Postman:
+
+1. Importa el archivo de colección ubicado en:
+   ```
+   collections/postman-collection.json
+   ```
+2. Ejecuta la colección en orden usando [Postman](https://www.postman.com/) o [Newman](https://www.npmjs.com/package/newman):
+
+   ```bash
+   newman run collections/postman-collection.json
+   ```
+
+   Los scripts de la colección gestionan los IDs creados y permiten probar todas las rutas y asociaciones.
 
 ## Deployment
 
