@@ -4,6 +4,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { RestauranteModule } from './restaurante/restaurante.module';
 import { PlatoModule } from './plato/plato.module';
+import { RestauranteEntity } from './restaurante/restaurante.entity/restaurante.entity';
+import { PlatoEntity } from './plato/plato.entity/plato.entity';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { PlatoModule } from './plato/plato.module';
       username: 'postgres',
       password: 'postgres',
       database: 'parcial-practico-db',
-      entities: [],
+      entities: [RestauranteEntity, PlatoEntity],
       dropSchema: true,
       synchronize: true,
     }),
