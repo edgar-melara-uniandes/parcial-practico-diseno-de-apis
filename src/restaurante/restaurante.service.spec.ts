@@ -3,7 +3,7 @@ import { RestauranteService } from './restaurante.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { RestauranteEntity } from './restaurante.entity/restaurante.entity';
 import { Repository } from 'typeorm';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 const restauranteArray = [
   {
@@ -97,6 +97,16 @@ describe('RestauranteService', () => {
     expect(repo.save).toHaveBeenCalled();
   });
 
+  it('create should throw BadRequestException if tipoCocina is invalid', async () => {
+    const dto = {
+      nombre: 'Nuevo',
+      direccion: 'Calle X',
+      tipoCocina: 'Francesa', // inválido
+      paginaWeb: 'http://nuevo.com',
+    };
+    await expect(service.create(dto)).rejects.toThrow(BadRequestException);
+  });
+
   it('update should update and return the restaurante', async () => {
     jest.spyOn(repo, 'findOne').mockResolvedValueOnce(restauranteArray[0]);
     jest.spyOn(service, 'findOne').mockResolvedValueOnce(restauranteArray[0]);
@@ -105,6 +115,13 @@ describe('RestauranteService', () => {
     const result = await service.update(1, dto);
     expect(result).toEqual(restauranteArray[0]);
     expect(repo.update).toHaveBeenCalledWith(1, dto);
+  });
+
+  it('update should throw BadRequestException if tipoCocina is invalid', async () => {
+    jest.spyOn(repo, 'findOne').mockResolvedValueOnce(restauranteArray[0]);
+    await expect(service.update(1, { tipoCocina: 'Francesa' })).rejects.toThrow(
+      BadRequestException,
+    );
   });
 
   it('update should throw NotFoundException if not found', async () => {
