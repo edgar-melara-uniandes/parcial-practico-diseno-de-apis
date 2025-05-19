@@ -3,8 +3,8 @@ import { RestauranteEntity } from '../../restaurante/restaurante.entity/restaura
 
 @Entity()
 export class PlatoEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   nombre: string;
@@ -12,11 +12,11 @@ export class PlatoEntity {
   @Column()
   descripcion: string;
 
-  @Column('decimal')
-  precio: number;
-
   @Column()
   categoria: string;
+
+  @Column('float')
+  precio: number;
 
   @ManyToMany(() => RestauranteEntity, (restaurante) => restaurante.platos)
   restaurantes: RestauranteEntity[];

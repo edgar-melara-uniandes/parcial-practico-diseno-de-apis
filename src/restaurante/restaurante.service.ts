@@ -37,7 +37,7 @@ export class RestauranteService {
     return this.restauranteRepository.find({ relations: ['platos'] });
   }
 
-  async findOne(id: number): Promise<RestauranteEntity> {
+  async findOne(id: string): Promise<RestauranteEntity> {
     const restaurante = await this.restauranteRepository.findOne({
       where: { id },
       relations: ['platos'],
@@ -60,7 +60,7 @@ export class RestauranteService {
   }
 
   async update(
-    id: number,
+    id: string,
     restaurante: Partial<RestauranteEntity>,
   ): Promise<RestauranteEntity> {
     const existe = await this.restauranteRepository.findOne({ where: { id } });
@@ -74,7 +74,7 @@ export class RestauranteService {
     return this.findOne(id);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const existe = await this.restauranteRepository.findOne({ where: { id } });
     if (!existe) {
       throw new NotFoundException(`Restaurante con id ${id} no encontrado`);

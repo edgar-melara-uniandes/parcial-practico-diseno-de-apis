@@ -14,8 +14,8 @@ export class RestaurantePlatoService {
   ) {}
 
   async addDishToRestaurant(
-    restauranteId: number,
-    platoId: number,
+    restauranteId: string,
+    platoId: string,
   ): Promise<RestauranteEntity> {
     const restaurante = await this.restauranteRepository.findOne({
       where: { id: restauranteId },
@@ -41,7 +41,7 @@ export class RestaurantePlatoService {
   }
 
   async findDishesFromRestaurant(
-    restauranteId: number,
+    restauranteId: string,
   ): Promise<PlatoEntity[]> {
     const restaurante = await this.restauranteRepository.findOne({
       where: { id: restauranteId },
@@ -56,8 +56,8 @@ export class RestaurantePlatoService {
   }
 
   async findDishFromRestaurant(
-    restauranteId: number,
-    platoId: number,
+    restauranteId: string,
+    platoId: string,
   ): Promise<PlatoEntity> {
     const restaurante = await this.restauranteRepository.findOne({
       where: { id: restauranteId },
@@ -78,8 +78,8 @@ export class RestaurantePlatoService {
   }
 
   async updateDishesFromRestaurant(
-    restauranteId: number,
-    platosIds: number[],
+    restauranteId: string,
+    platosIds: string[],
   ): Promise<RestauranteEntity> {
     const restaurante = await this.restauranteRepository.findOne({
       where: { id: restauranteId },
@@ -99,8 +99,8 @@ export class RestaurantePlatoService {
   }
 
   async deleteDishFromRestaurant(
-    restauranteId: number,
-    platoId: number,
+    restauranteId: string,
+    platoId: string,
   ): Promise<void> {
     const restaurante = await this.restauranteRepository.findOne({
       where: { id: restauranteId },

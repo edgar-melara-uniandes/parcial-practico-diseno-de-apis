@@ -6,7 +6,7 @@ import {
   Delete,
   Param,
   Body,
-  ParseIntPipe,
+  ParseUUIDPipe,
   UseInterceptors,
 } from '@nestjs/common';
 import { PlatoService } from './plato.service';
@@ -26,7 +26,7 @@ export class PlatoController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PlatoEntity> {
+  async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<PlatoEntity> {
     return this.platoService.findOne(id);
   }
 
@@ -38,7 +38,7 @@ export class PlatoController {
 
   @Put(':id')
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() platoDto: PlatoDto,
   ): Promise<PlatoEntity> {
     const plato = plainToInstance(PlatoEntity, platoDto);
@@ -46,7 +46,7 @@ export class PlatoController {
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.platoService.delete(id);
   }
 }

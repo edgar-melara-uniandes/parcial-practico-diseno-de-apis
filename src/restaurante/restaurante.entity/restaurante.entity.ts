@@ -9,8 +9,8 @@ import { PlatoEntity } from '../../plato/plato.entity/plato.entity';
 
 @Entity()
 export class RestauranteEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   nombre: string;

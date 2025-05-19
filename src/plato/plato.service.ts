@@ -34,7 +34,7 @@ export class PlatoService {
     return this.platoRepository.find({ relations: ['restaurantes'] });
   }
 
-  async findOne(id: number): Promise<PlatoEntity> {
+  async findOne(id: string): Promise<PlatoEntity> {
     const plato = await this.platoRepository.findOne({
       where: { id },
       relations: ['restaurantes'],
@@ -58,7 +58,7 @@ export class PlatoService {
     return this.platoRepository.save(nuevoPlato);
   }
 
-  async update(id: number, plato: Partial<PlatoEntity>): Promise<PlatoEntity> {
+  async update(id: string, plato: Partial<PlatoEntity>): Promise<PlatoEntity> {
     const existe = await this.platoRepository.findOne({ where: { id } });
     if (!existe) {
       throw new NotFoundException(`Plato con id ${id} no encontrado`);
@@ -73,7 +73,7 @@ export class PlatoService {
     return this.findOne(id);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     const existe = await this.platoRepository.findOne({ where: { id } });
     if (!existe) {
       throw new NotFoundException(`Plato con id ${id} no encontrado`);

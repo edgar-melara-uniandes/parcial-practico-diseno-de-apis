@@ -6,7 +6,7 @@ import {
   Delete,
   Param,
   Body,
-  ParseIntPipe,
+  ParseUUIDPipe,
   UseInterceptors,
 } from '@nestjs/common';
 import { RestauranteService } from './restaurante.service';
@@ -27,7 +27,7 @@ export class RestauranteController {
 
   @Get(':id')
   async findOne(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<RestauranteEntity> {
     return this.restauranteService.findOne(id);
   }
@@ -42,7 +42,7 @@ export class RestauranteController {
 
   @Put(':id')
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() restauranteDto: RestauranteDto,
   ): Promise<RestauranteEntity> {
     const restaurante = plainToInstance(RestauranteEntity, restauranteDto);
@@ -50,7 +50,7 @@ export class RestauranteController {
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number): Promise<void> {
+  async delete(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
     return this.restauranteService.delete(id);
   }
 }
