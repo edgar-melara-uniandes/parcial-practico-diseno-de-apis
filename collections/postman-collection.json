@@ -3,12 +3,47 @@
     "name": "API Restaurante-Plato",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// ...existing code or leave empty for global pre-request script..."
+        ],
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "// ...existing code or leave empty for global test script..."
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
   "item": [
     {
       "name": "Restaurantes",
       "item": [
         {
           "name": "Crear restaurante válido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Guarda el id del restaurante creado",
+                  "if (pm.response.code === 201) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.collectionVariables.set('restauranteId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -21,6 +56,20 @@
         },
         {
           "name": "Crear restaurante inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Espera error de validación",
+                  "pm.test('Debe fallar con error 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -33,6 +82,20 @@
         },
         {
           "name": "Obtener todos los restaurantes",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y un array', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants"] }
@@ -40,6 +103,32 @@
         },
         {
           "name": "Obtener restaurante por ID",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Usa el id guardado si existe",
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[pm.request.url.path.length-1] = pm.collectionVariables.get('restauranteId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y el restaurante', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111"] }
@@ -47,6 +136,19 @@
         },
         {
           "name": "Obtener restaurante por ID inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/99999999-9999-9999-9999-999999999999", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "99999999-9999-9999-9999-999999999999"] }
@@ -54,6 +156,32 @@
         },
         {
           "name": "Actualizar restaurante",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Usa el id guardado si existe",
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[pm.request.url.path.length-1] = pm.collectionVariables.get('restauranteId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y el restaurante actualizado', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -66,6 +194,19 @@
         },
         {
           "name": "Actualizar restaurante inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -78,6 +219,31 @@
         },
         {
           "name": "Eliminar restaurante por ID",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Usa el id guardado si existe",
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[pm.request.url.path.length-1] = pm.collectionVariables.get('restauranteId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111"] }
@@ -85,6 +251,19 @@
         },
         {
           "name": "Eliminar restaurante inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/99999999-9999-9999-9999-999999999999", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "99999999-9999-9999-9999-999999999999"] }
@@ -97,6 +276,21 @@
       "item": [
         {
           "name": "Crear plato válido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Guarda el id del plato creado",
+                  "if (pm.response.code === 201) {",
+                  "  var jsonData = pm.response.json();",
+                  "  pm.collectionVariables.set('platoId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -109,6 +303,19 @@
         },
         {
           "name": "Crear plato inválido",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe fallar con error 400', function () {",
+                  "  pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -121,6 +328,20 @@
         },
         {
           "name": "Obtener todos los platos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y un array', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/dishes", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "dishes"] }
@@ -128,6 +349,31 @@
         },
         {
           "name": "Obtener plato por ID",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (pm.collectionVariables.get('platoId')) {",
+                  "  pm.request.url.path[pm.request.url.path.length-1] = pm.collectionVariables.get('platoId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y el plato', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/dishes/22222222-2222-2222-2222-222222222222", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "dishes", "22222222-2222-2222-2222-222222222222"] }
@@ -135,6 +381,19 @@
         },
         {
           "name": "Obtener plato por ID inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/dishes/99999999-9999-9999-9999-999999999999", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "dishes", "99999999-9999-9999-9999-999999999999"] }
@@ -142,6 +401,31 @@
         },
         {
           "name": "Actualizar plato",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (pm.collectionVariables.get('platoId')) {",
+                  "  pm.request.url.path[pm.request.url.path.length-1] = pm.collectionVariables.get('platoId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y el plato actualizado', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -154,6 +438,19 @@
         },
         {
           "name": "Actualizar plato inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -166,6 +463,30 @@
         },
         {
           "name": "Eliminar plato por ID",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (pm.collectionVariables.get('platoId')) {",
+                  "  pm.request.url.path[pm.request.url.path.length-1] = pm.collectionVariables.get('platoId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "url": { "raw": "http://localhost:3000/api/v1/dishes/22222222-2222-2222-2222-222222222222", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "dishes", "22222222-2222-2222-2222-222222222222"] }
@@ -173,6 +494,19 @@
         },
         {
           "name": "Eliminar plato inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "url": { "raw": "http://localhost:3000/api/v1/dishes/99999999-9999-9999-9999-999999999999", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "dishes", "99999999-9999-9999-9999-999999999999"] }
@@ -185,6 +519,34 @@
       "item": [
         {
           "name": "Asociar plato a restaurante",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Usa los ids guardados",
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[4] = pm.collectionVariables.get('restauranteId');",
+                  "}",
+                  "if (pm.collectionVariables.get('platoId')) {",
+                  "  pm.request.url.path[6] = pm.collectionVariables.get('platoId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 201 o 200', function () {",
+                  "  pm.expect([200,201]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111/dishes/22222222-2222-2222-2222-222222222222", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111", "dishes", "22222222-2222-2222-2222-222222222222"] }
@@ -192,6 +554,19 @@
         },
         {
           "name": "Asociar plato inexistente a restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111/dishes/99999999-9999-9999-9999-999999999999", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111", "dishes", "99999999-9999-9999-9999-999999999999"] }
@@ -199,6 +574,31 @@
         },
         {
           "name": "Obtener platos de un restaurante",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[4] = pm.collectionVariables.get('restauranteId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y un array', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111/dishes", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111", "dishes"] }
@@ -206,6 +606,34 @@
         },
         {
           "name": "Obtener plato asociado a restaurante",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[4] = pm.collectionVariables.get('restauranteId');",
+                  "}",
+                  "if (pm.collectionVariables.get('platoId')) {",
+                  "  pm.request.url.path[6] = pm.collectionVariables.get('platoId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y el plato', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111/dishes/22222222-2222-2222-2222-222222222222", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111", "dishes", "22222222-2222-2222-2222-222222222222"] }
@@ -213,6 +641,19 @@
         },
         {
           "name": "Obtener plato no asociado a restaurante",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111/dishes/99999999-9999-9999-9999-999999999999", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111", "dishes", "99999999-9999-9999-9999-999999999999"] }
@@ -220,6 +661,31 @@
         },
         {
           "name": "Actualizar platos asociados a restaurante",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[4] = pm.collectionVariables.get('restauranteId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 200 y un array', function () {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.json()).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -229,6 +695,19 @@
         },
         {
           "name": "Actualizar platos asociados con plato inexistente",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -238,6 +717,33 @@
         },
         {
           "name": "Eliminar plato asociado a restaurante",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "if (pm.collectionVariables.get('restauranteId')) {",
+                  "  pm.request.url.path[4] = pm.collectionVariables.get('restauranteId');",
+                  "}",
+                  "if (pm.collectionVariables.get('platoId')) {",
+                  "  pm.request.url.path[6] = pm.collectionVariables.get('platoId');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111/dishes/22222222-2222-2222-2222-222222222222", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111", "dishes", "22222222-2222-2222-2222-222222222222"] }
@@ -245,10 +751,19 @@
         },
         {
           "name": "Eliminar plato no asociado a restaurante",
-          "request": {
-            "method": "DELETE",
-            "url": { "raw": "http://localhost:3000/api/v1/restaurants/11111111-1111-1111-1111-111111111111/dishes/99999999-9999-9999-9999-999999999999", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api", "v1", "restaurants", "11111111-1111-1111-1111-111111111111", "dishes", "99999999-9999-9999-9999-999999999999"] }
-          }
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Debe retornar 404', function () {",
+                  "  pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
         }
       ]
     }
